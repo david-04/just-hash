@@ -14,6 +14,7 @@ export interface ResultRowProperties {
 interface ResultRowState {
     readonly copyState: CopyState;
     readonly lines: ReadonlyArray<string>;
+    readonly currentlyCalculatingLines: ReadonlyArray<string>;
     readonly hash: string | Error | undefined;
 }
 
@@ -24,6 +25,7 @@ type CopyState = "idle" | "busy" | "success" | "failed";
 //----------------------------------------------------------------------------------------------------------------------
 
 export class ResultRow extends Component<ResultRowProperties, ResultRowState> {
+    //
     //------------------------------------------------------------------------------------------------------------------
     // Initialization
     //------------------------------------------------------------------------------------------------------------------
@@ -31,8 +33,7 @@ export class ResultRow extends Component<ResultRowProperties, ResultRowState> {
     public constructor(props: ResultRowProperties) {
         super(props);
         this.onButtonClicked = this.onButtonClicked.bind(this);
-        this.state = { copyState: "idle", lines: [], hash: undefined };
-        this.triggerHashCalculationIfNecessary();
+        this.state = { copyState: "idle", lines: [], currentlyCalculatingLines: [], hash: undefined };
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -100,8 +101,11 @@ export class ResultRow extends Component<ResultRowProperties, ResultRowState> {
     }
 
     private triggerHashCalculationIfNecessary() {
-        if (!this.linesAreCurrent(this.state.lines)) {
-            setTimeout(() => this.calculateHash([...this.props.lines]), 0);
+        if (!this.linesAreCurrent(this.state.lines) && !this.linesAreCurrent(this.state.currentlyCalculatingLines)) {
+            const lines = [...this.props.lines];
+            this.setState({ ...this.state, currentlyCalculatingLines: lines }, () => {
+                setTimeout(() => this.calculateHash(lines), 0);
+            });
         }
     }
 

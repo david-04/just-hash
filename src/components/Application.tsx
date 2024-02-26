@@ -41,10 +41,10 @@ export class Application extends Component<ApplicationProps, ApplicationState> {
         }
         return (
             <div class="Application">
+                <Header />
                 {this.renderInputRows()}
                 <ResultRow lines={lines} />
                 <CalculationInfo numberOfLines={lines.length} />
-                <Header />
             </div>
         );
     }
