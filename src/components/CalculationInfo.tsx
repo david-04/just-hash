@@ -38,7 +38,7 @@ export class CalculationInfo extends Component<CalculationInfoProperties, Calcul
     render() {
         return (
             <div class="CalculationInfo">
-                <div class="formula">result = {this.renderFormula()}</div>
+                {/* <div class="formula">result = {this.renderFormula()}</div> */}
                 <div class="toggle">
                     <a onClick={this.onToggleCalculationRules}>
                         {this.state.calculationRulesVisible ? "Hide" : "Show"} calculation rules{" "}
@@ -79,27 +79,24 @@ export class CalculationInfo extends Component<CalculationInfoProperties, Calcul
                             <td>{this.renderFormula()}</td>
                         </tr>
                         <tr>
-                            <td colspan={3}>&nbsp;</td>
-                        </tr>
-                        <tr>
                             <td>hash(input)</td>
                             <td>=</td>
-                            <td>hash${ITERATIONS}(input)</td>
+                            <td>hash{ITERATIONS}(input)</td>
                         </tr>
                         <tr>
-                            <td>hash${ITERATIONS}(input)</td>
+                            <td>hash{ITERATIONS}(input)</td>
                             <td>=</td>
-                            <td>sha512(hash${ITERATIONS - 1}(input) + input)</td>
+                            <td>sha512(hash{ITERATIONS - 1}(input) + input)</td>
                         </tr>
                         <tr>
-                            <td>hash${ITERATIONS - 1}(input)</td>
+                            <td>hash{ITERATIONS - 1}(input)</td>
                             <td>=</td>
-                            <td>sha512(hash${ITERATIONS - 2}(input) + input)</td>
+                            <td>sha512(hash{ITERATIONS - 2}(input) + input)</td>
                         </tr>
                         <tr class="ellipsis">
                             <td>[...]</td>
-                            <td>=</td>
-                            <td>[...]</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td>hash2(input)</td>
