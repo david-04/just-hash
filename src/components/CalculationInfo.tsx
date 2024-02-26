@@ -38,7 +38,6 @@ export class CalculationInfo extends Component<CalculationInfoProperties, Calcul
     render() {
         return (
             <div class="CalculationInfo">
-                {/* <div class="formula">result = {this.renderFormula()}</div> */}
                 <div class="toggle">
                     <a onClick={this.onToggleCalculationRules}>
                         {this.state.calculationRulesVisible ? "Hide" : "Show"} calculation rules{" "}
