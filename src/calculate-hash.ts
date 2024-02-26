@@ -2,8 +2,10 @@ type AssertStillRequired = () => void;
 
 export const ITERATIONS = 50000;
 
-const PREVIOUS_SHA512_CACHE = new Map<string, string>();
-const CURRENT_SHA512_CACHE = new Map<string, string>();
+const SHA521_CACHE = {
+    previous: new Map<string, string>(),
+    current: new Map<string, string>(),
+};
 
 export const calculateHash = async (lines: ReadonlyArray<string>, assertStillRequired: AssertStillRequired) => {
     const hashes = new Array<string>();
@@ -14,7 +16,7 @@ export const calculateHash = async (lines: ReadonlyArray<string>, assertStillReq
 };
 
 export const calculateSHA512 = async (line: string, assertStillRequired: AssertStillRequired) => {
-    return withCache(line, PREVIOUS_SHA512_CACHE, CURRENT_SHA512_CACHE, async () => {
+    return withCache(line, SHA521_CACHE, async () => {
         let hash = "";
         for (let index = 0; index < ITERATIONS; index++) {
             assertStillRequired();
@@ -25,18 +27,12 @@ export const calculateSHA512 = async (line: string, assertStillRequired: AssertS
     });
 };
 
-export const withCache = async (
-    line: string,
-    previousCache: Map<string, string>,
-    currentCache: Map<string, string>,
-    calculateHash: () => Promise<string>
-) => {
-    if (1000 < currentCache.size) {
-        previousCache.clear();
-        currentCache.forEach((hash, line) => previousCache.set(line, hash));
-        currentCache.clear();
+export const withCache = async (line: string, cache: typeof SHA521_CACHE, calculateHash: () => Promise<string>) => {
+    if (1000 < cache.current.size) {
+        cache.previous = cache.current;
+        cache.current = new Map();
     }
-    const hash = previousCache.get(line) ?? currentCache.get(line) ?? (await calculateHash());
-    currentCache.set(line, hash);
+    const hash = cache.previous.get(line) ?? cache.current.get(line) ?? (await calculateHash());
+    cache.current.set(line, hash);
     return hash;
 };
