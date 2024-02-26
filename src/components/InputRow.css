@@ -1,0 +1,14 @@
+.InputRow {
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+.InputRow input {
+    width: 100%;
+    font-size: inherit;
+    box-sizing: border-box;
+}
+
+.InputRow.last {
+    opacity: 0.3;
+}

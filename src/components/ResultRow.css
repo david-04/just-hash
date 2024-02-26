@@ -1,0 +1,47 @@
+.ResultRow {
+    width: 100%;
+}
+
+.ResultRow .hash {
+    word-break: keep-all;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 1em;
+    padding-top: 0.2em;
+    padding-bottom: -0.2em;
+    user-select: all;
+}
+
+.ResultRow button {
+    float: right;
+    width: 5em;
+    font-size: inherit;
+    height: 2em;
+    font-size: 0.70em;
+}
+
+.ResultRow button.idle {
+    color: white;
+    background-color: rgb(13, 110, 253);
+    border: 1px rgb(8, 72, 167) solid;
+}
+
+.ResultRow button.success {
+    color: white;
+    background-color: rgb(69, 145, 7);
+    border: 1px rgb(121, 146, 7)solid;
+}
+
+.ResultRow button.failed {
+    color: white;
+    background-color: rgb(255, 0, 0);
+    border: 1px rgb(184, 0, 0) solid;
+}
+
+.ResultRow button:disabled:hover {
+    cursor: not-allowed;
+}
+
+.ResultRow button:hover {
+    cursor: pointer;
+}

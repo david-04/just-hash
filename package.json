@@ -1,0 +1,17 @@
+{
+    "name": "hash-chain",
+    "version": "0.0.0",
+    "private": true,
+    "license": "UNLICENSED",
+    "module": "module",
+    "swpm": "npm",
+    "dependencies": {
+        "preact": "^10.19.6"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^1.5.3",
+        "esbuild": "^0.20.1",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
+    }
+}

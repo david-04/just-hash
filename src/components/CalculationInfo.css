@@ -1,0 +1,45 @@
+.CalculationInfo {
+    width: 100%;
+    margin-top: 2em;
+    font-size: 0.5em;
+
+}
+
+.CalculationInfo .formula {
+    opacity: 0.5;
+}
+
+.CalculationInfo .toggle {
+    opacity: 0.5;
+    margin-top: 2em;
+}
+
+.CalculationInfo .toggle a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.CalculationInfo .toggle a:hover {
+    cursor: pointer;
+}
+
+.CalculationInfo .rules {
+    margin-top: 2em;
+    opacity: 1;
+}
+
+.CalculationInfo .rules table {
+    border: 0;
+    border-spacing: 0;
+    padding: 0;
+    padding: 0;
+}
+
+.CalculationInfo .rules .ellipsis {
+    opacity: 0.5;
+}
+
+.CalculationInfo .rules td:nth-child(2) {
+    padding-left: 0.75em;
+    padding-right: 0.75em;
+}
