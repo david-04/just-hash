@@ -3,4 +3,7 @@
 /build/**/*.d.js
 /build/**/*.js.map
 /build/.tsbuildinfo
-/dist/*.map
+/dist/*.js*
+/dist/*.css*
+/dist/favicon.*
+!/dist/favicon.svg
