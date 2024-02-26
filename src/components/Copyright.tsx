@@ -21,8 +21,8 @@ export class Copyright extends Component<CopyrightProperties, never> {
     render() {
         return (
             <div class="Copyright">
-                Copyright (c) 2024 by David Hofmann | <a href="https://choosealicense.com/licenses/mit/">MIT License</a>{" "}
-                | <a href="">GitHub</a>
+                Copyright (c) 2024 David Hofmann | <a href="https://choosealicense.com/licenses/mit/">MIT License</a> |{" "}
+                <a href="https://github.com/david-04/just-hash">GitHub</a>
             </div>
         );
     }
