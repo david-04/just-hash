@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Just hash</title>
+<style type="text/css">
+/* src/components/CalculationInfo.css */
+.CalculationInfo {
+  width: 100%;
+  margin-top: 2em;
+  font-size: 0.5em;
+}
+.CalculationInfo .toggle {
+  opacity: 0.5;
+  margin-top: 2em;
+}
+.CalculationInfo .toggle a {
+  text-decoration: none;
+  color: inherit;
+}
+.CalculationInfo .toggle a:hover {
+  cursor: pointer;
+}
+.CalculationInfo .rules {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid silver;
+  opacity: 1;
+}
+.CalculationInfo .rules table {
+  border: 0;
+  border-spacing: 0;
+  padding: 0;
+  padding: 0;
+}
+.CalculationInfo .rules tr:first-child td {
+  padding-bottom: 1em;
+}
+.CalculationInfo .rules .ellipsis td {
+  opacity: 0.5;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+.CalculationInfo .rules td:nth-child(2) {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+}
+
+/* src/components/Header.css */
+.Header {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  z-index: 999;
+}
+.Header a {
+  text-decoration: none;
+}
+.Header .separator {
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+}
+
+/* src/components/InputRow.css */
+.InputRow {
+  width: 100%;
+  margin-bottom: 1em;
+}
+.InputRow input {
+  width: 100%;
+  font-size: inherit;
+  box-sizing: border-box;
+}
+.InputRow.last {
+  opacity: 0.3;
+}
+
+/* src/components/ResultRow.css */
+.ResultRow {
+  width: 100%;
+}
+.ResultRow .hash {
+  word-break: keep-all;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 1em;
+  padding-top: 0.2em;
+  padding-bottom: -0.2em;
+  user-select: all;
+}
+.ResultRow button {
+  float: right;
+  width: 5em;
+  font-size: inherit;
+  height: 2em;
+  font-size: 0.70em;
+}
+.ResultRow button.idle {
+  color: white;
+  background-color: rgb(13, 110, 253);
+  border: 1px rgb(8, 72, 167) solid;
+}
+.ResultRow button.success {
+  color: white;
+  background-color: rgb(69, 145, 7);
+  border: 1px rgb(121, 146, 7)solid;
+}
+.ResultRow button.failed {
+  color: white;
+  background-color: rgb(255, 0, 0);
+  border: 1px rgb(184, 0, 0) solid;
+}
+.ResultRow button:disabled:hover {
+  cursor: not-allowed;
+}
+.ResultRow button:hover {
+  cursor: pointer;
+}
+
+/* src/components/Application.css */
+html {
+  font-family: sans-serif;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+#app {
+  width: 100%;
+}
+.Application {
+  width: 80%;
+  min-width: 20em;
+  max-width: 30em;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: sans-serif;
+  margin-top: 10vh;
+  font-size: 1.75rem;
+}
+/*# sourceMappingURL=just-hash.css.map */
+</style>
+    <link rel="icon"
+        href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhLS0gQ3JlYXRlZCB3aXRoIElua3NjYXBlIChodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy8pIC0tPgoKPHN2ZwogICB3aWR0aD0iMTBtbSIKICAgaGVpZ2h0PSIxMG1tIgogICB2aWV3Qm94PSIwIDAgMTAgMTAiCiAgIHZlcnNpb249IjEuMSIKICAgaWQ9InN2ZzEiCiAgIGlua3NjYXBlOnZlcnNpb249IjEuMyAoMGUxNTBlZDZjNCwgMjAyMy0wNy0yMSkiCiAgIHNvZGlwb2RpOmRvY25hbWU9ImZhdmljb24uc3ZnIgogICBpbmtzY2FwZTpleHBvcnQtZmlsZW5hbWU9ImZhdmljb24ucG5nIgogICBpbmtzY2FwZTpleHBvcnQteGRwaT0iNDAuNjM5OTk5IgogICBpbmtzY2FwZTpleHBvcnQteWRwaT0iNDAuNjM5OTk5IgogICB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIKICAgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIgogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxzb2RpcG9kaTpuYW1lZHZpZXcKICAgICBpZD0ibmFtZWR2aWV3MSIKICAgICBwYWdlY29sb3I9IiNmZmZmZmYiCiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiCiAgICAgYm9yZGVyb3BhY2l0eT0iMS4wIgogICAgIGlua3NjYXBlOnNob3dwYWdlc2hhZG93PSIyIgogICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwLjAiCiAgICAgaW5rc2NhcGU6cGFnZWNoZWNrZXJib2FyZD0iMCIKICAgICBpbmtzY2FwZTpkZXNrY29sb3I9IiNkMWQxZDEiCiAgICAgaW5rc2NhcGU6ZG9jdW1lbnQtdW5pdHM9Im1tIgogICAgIHNob3dncmlkPSJmYWxzZSIKICAgICBpbmtzY2FwZTp6b29tPSI5LjA3MjQ0NjciCiAgICAgaW5rc2NhcGU6Y3g9IjQ4LjE2NzgyMiIKICAgICBpbmtzY2FwZTpjeT0iMTEuODQ5MDY0IgogICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iMjU2MCIKICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSIxNDE3IgogICAgIGlua3NjYXBlOndpbmRvdy14PSItOCIKICAgICBpbmtzY2FwZTp3aW5kb3cteT0iLTgiCiAgICAgaW5rc2NhcGU6d2luZG93LW1heGltaXplZD0iMSIKICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJsYXllcjEiPgogICAgPGlua3NjYXBlOmdyaWQKICAgICAgIGlkPSJncmlkMSIKICAgICAgIHVuaXRzPSJweCIKICAgICAgIG9yaWdpbng9IjAiCiAgICAgICBvcmlnaW55PSIwIgogICAgICAgc3BhY2luZ3g9IjAuMjY0NTgzMzMiCiAgICAgICBzcGFjaW5neT0iMC4yNjQ1ODMzMyIKICAgICAgIGVtcGNvbG9yPSIjM2YzZmZmIgogICAgICAgZW1wb3BhY2l0eT0iMC4yNTA5ODAzOSIKICAgICAgIGNvbG9yPSIjM2YzZmZmIgogICAgICAgb3BhY2l0eT0iMC4xMjU0OTAyIgogICAgICAgZW1wc3BhY2luZz0iNSIKICAgICAgIGRvdHRlZD0iZmFsc2UiCiAgICAgICBncmlkYW5nbGV4PSIzMCIKICAgICAgIGdyaWRhbmdsZXo9IjMwIgogICAgICAgdmlzaWJsZT0iZmFsc2UiIC8+CiAgPC9zb2RpcG9kaTpuYW1lZHZpZXc+CiAgPGRlZnMKICAgICBpZD0iZGVmczEiIC8+CiAgPGcKICAgICBpbmtzY2FwZTpsYWJlbD0iTGF5ZXIgMSIKICAgICBpbmtzY2FwZTpncm91cG1vZGU9ImxheWVyIgogICAgIGlkPSJsYXllcjEiPgogICAgPHJlY3QKICAgICAgIHN0eWxlPSJmaWxsOiM3YjM5ZDA7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM3YTM5ZDE7c3Ryb2tlLXdpZHRoOjAuNDc1MjgzO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjA7c3Ryb2tlLWRhc2hhcnJheTpub25lO3N0cm9rZS1vcGFjaXR5OjEiCiAgICAgICBpZD0icmVjdDEiCiAgICAgICB3aWR0aD0iOS41MjQ3MTY0IgogICAgICAgaGVpZ2h0PSI5LjUyNDcxNjQiCiAgICAgICB4PSIwLjIzNzY0MTY5IgogICAgICAgeT0iLTkuNzYyMzU5NiIKICAgICAgIHRyYW5zZm9ybT0ic2NhbGUoMSwtMSkiCiAgICAgICByeT0iMCIgLz4KICAgIDxwYXRoCiAgICAgICBzdHlsZT0iLWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjonQ29taWMgU2FucyBNUyc7ZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjIwMzA5NnB4O3N0cm9rZS1vcGFjaXR5OjEiCiAgICAgICBkPSJNIDMuNzY5MTEyNCw1Ljc5ODMxMjggSCA1LjcxMDU2ODYgTCA2LjE0OTMzODMsNC4xMTY1ODE1IEggNC4yNTQ0NzU5IFogbSAtMC43MjYxMDU1LDAgMC40NzM3MTQ5LC0xLjY4MTczMTMgSCAyLjQ3OTk4MzQgcSAtMC4zNjg4NzY1LDAgLTAuMzY4ODc2NSwtMC40MDUyMzY5IDAsLTAuMzA3OTc5MiAwLjU3NDY3MjMsLTAuMzA3OTc5MiBIIDMuNzEwODY3OCBRIDMuODExODIzMywyLjkzMzI5MDcgNC4wMTc2MTgsMi4xMjI4MTc3IDQuMTMwMjIyMSwxLjc1IDQuNDcxOTE5MywxLjc1IHEgMC4xMjgxMzU3LDAgMC4yMDk2Nzc1LDAuMTA5NDEzOSAwLjA4NTQzLDAuMTA1MzYyMSAwLjA4NTQzLDAuMjM1MDM3MyAwLDAuMTYyMDk0NSAtMC4xMDA5NTYzLDAuNTM0OTEyMyAtMC4xNzA4NDksMC42NDQzMjYgLTAuMTk4MDI4MywwLjc3NDAwMTkgaCAxLjg4MzIxMyBRIDYuNDgzMjczMywyLjkxMzAyODggNi43MTIzNjU2LDIuMDk0NDUxMiA2LjgxMzMyMSwxLjc1IDcuMDkyODkwNywxLjc1IHEgMC4zMjYxNjQ2LDAgMC4zMjYxNjQ2LDAuMzE2MDg0NyAwLDAuMjc1NTYwOSAtMC4zMjIyODE3LDEuMzM3MjgwNyBoIDAuNzU3MTY5NSBxIDAuMzk2MDU2OSwwIDAuMzk2MDU2OSwwLjMwMzkyNyAwLDAuNDI1NDk4NiAtMC40Mzg3Njk4LDAuNDI1NDk4NiAtMC4wNTgyMzksMCAtMC4xODI0OTYyLC0wLjAwODExIFEgNy41MDgzNjMxLDQuMTE2NTcxIDcuNDUwMTE5Niw0LjExNjU3MSBIIDYuODgzMjE0MiBMIDYuNDcxNjI0Nyw1Ljc5ODMxODQgaCAwLjc5MjExNDYgcSAwLjI4MzQ1MjgsMCAwLjM5OTk0MDYsMC4wNDQ1NzcgMC4yMDE5MTA5LDAuMDgxMDQ4IDAuMjAxOTEwOSwwLjMyNDE4OTQgMCwwLjM3MjgxNzggLTAuMzM3ODEzMSwwLjM3MjgxNzggSCA2LjI3NzQ3ODcgTCA1LjkyODAxNzUsNy44NTY5MjA3IFEgNS44MjMxNzc1LDguMjUgNS40OTMxMjk3LDguMjUgNS4xNzQ3MzIsOC4yNSA1LjE3NDczMiw3LjkyOTg2MzEgcSAwLC0wLjIzOTA4OTYgMC4xMjgxMzU3LC0wLjY5NzAwNjkgMC4xNzg2MTM1LC0wLjYzNjIyMTQgMC4xOTAyNjIsLTAuNjkyOTU0NSBIIDMuNTUxNjczNiBRIDMuNDM1MTg1Niw3LjAxNDAyMjYgMy4xNDM5NjczLDcuOTMzOTA5NCAzLjAzMTM2Myw4LjIyMTYyNzMgMi43NjM0NDA5LDguMjIxNjI3MyBxIC0wLjMxMDYzMiwwIC0wLjMxMDYzMiwtMC4zMjAxMzcgMCwtMC4xNTgwNDIxIDAuMDg5MzA1LC0wLjQ1NzkxNzIgUSAyLjY3ODAxNjEsNi45ODk3MDg0IDIuODEzOTE3OCw2LjUzOTg5NTkgSCAyLjA3MjI4MTcgUSAxLjc1LDYuNTM5ODk1OSAxLjc1LDYuMTM4NzExNiBxIDAsLTAuMTU4MDQyMSAwLjEzMjAxODYsLTAuMjU1Mjk4OCAwLjExMjYwNTEsLTAuMDg1MSAwLjI3MTgwNCwtMC4wODUxIHoiCiAgICAgICBpZD0idGV4dDEiCiAgICAgICBhcmlhLWxhYmVsPSIjIiAvPgogIDwvZz4KPC9zdmc+Cg==">
+
+</head>
+
+<body>
+    <div id="app" />
+<script type="text/javascript">
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a2, b2) => {
+  for (var prop in b2 || (b2 = {}))
+    if (__hasOwnProp.call(b2, prop))
+      __defNormalProp(a2, prop, b2[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b2)) {
+      if (__propIsEnum.call(b2, prop))
+        __defNormalProp(a2, prop, b2[prop]);
+    }
+  return a2;
+};
+var __spreadProps = (a2, b2) => __defProps(a2, __getOwnPropDescs(b2));
+var __publicField = (obj, key, value) => {
+  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+  return value;
+};
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e2) {
+        reject(e2);
+      }
+    };
+    var step = (x2) => x2.done ? resolve(x2.value) : Promise.resolve(x2.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// node_modules/preact/dist/preact.module.js
+var n;
+var l;
+var u;
+var t;
+var i;
+var o;
+var r;
+var f;
+var e;
+var c = {};
+var s = [];
+var a = /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
+var h = Array.isArray;
+function v(n2, l2) {
+  for (var u2 in l2)
+    n2[u2] = l2[u2];
+  return n2;
+}
+function p(n2) {
+  var l2 = n2.parentNode;
+  l2 && l2.removeChild(n2);
+}
+function y(l2, u2, t2) {
+  var i2, o2, r2, f2 = {};
+  for (r2 in u2)
+    "key" == r2 ? i2 = u2[r2] : "ref" == r2 ? o2 = u2[r2] : f2[r2] = u2[r2];
+  if (arguments.length > 2 && (f2.children = arguments.length > 3 ? n.call(arguments, 2) : t2), "function" == typeof l2 && null != l2.defaultProps)
+    for (r2 in l2.defaultProps)
+      void 0 === f2[r2] && (f2[r2] = l2.defaultProps[r2]);
+  return d(l2, f2, i2, o2, null);
+}
+function d(n2, t2, i2, o2, r2) {
+  var f2 = { type: n2, props: t2, key: i2, ref: o2, __k: null, __: null, __b: 0, __e: null, __d: void 0, __c: null, constructor: void 0, __v: null == r2 ? ++u : r2, __i: -1, __u: 0 };
+  return null == r2 && null != l.vnode && l.vnode(f2), f2;
+}
+function g(n2) {
+  return n2.children;
+}
+function b(n2, l2) {
+  this.props = n2, this.context = l2;
+}
+function m(n2, l2) {
+  if (null == l2)
+    return n2.__ ? m(n2.__, n2.__i + 1) : null;
+  for (var u2; l2 < n2.__k.length; l2++)
+    if (null != (u2 = n2.__k[l2]) && null != u2.__e)
+      return u2.__e;
+  return "function" == typeof n2.type ? m(n2) : null;
+}
+function w(n2, u2, t2) {
+  var i2, o2 = n2.__v, r2 = o2.__e, f2 = n2.__P;
+  if (f2)
+    return (i2 = v({}, o2)).__v = o2.__v + 1, l.vnode && l.vnode(i2), M(f2, i2, o2, n2.__n, void 0 !== f2.ownerSVGElement, 32 & o2.__u ? [r2] : null, u2, null == r2 ? m(o2) : r2, !!(32 & o2.__u), t2), i2.__v = o2.__v, i2.__.__k[i2.__i] = i2, i2.__d = void 0, i2.__e != r2 && k(i2), i2;
+}
+function k(n2) {
+  var l2, u2;
+  if (null != (n2 = n2.__) && null != n2.__c) {
+    for (n2.__e = n2.__c.base = null, l2 = 0; l2 < n2.__k.length; l2++)
+      if (null != (u2 = n2.__k[l2]) && null != u2.__e) {
+        n2.__e = n2.__c.base = u2.__e;
+        break;
+      }
+    return k(n2);
+  }
+}
+function x(n2) {
+  (!n2.__d && (n2.__d = true) && i.push(n2) && !C.__r++ || o !== l.debounceRendering) && ((o = l.debounceRendering) || r)(C);
+}
+function C() {
+  var n2, u2, t2, o2 = [], r2 = [];
+  for (i.sort(f); n2 = i.shift(); )
+    n2.__d && (t2 = i.length, u2 = w(n2, o2, r2) || u2, 0 === t2 || i.length > t2 ? (j(o2, u2, r2), r2.length = o2.length = 0, u2 = void 0, i.sort(f)) : u2 && l.__c && l.__c(u2, s));
+  u2 && j(o2, u2, r2), C.__r = 0;
+}
+function P(n2, l2, u2, t2, i2, o2, r2, f2, e2, a2, h2) {
+  var v2, p2, y2, d2, _, g2 = t2 && t2.__k || s, b2 = l2.length;
+  for (u2.__d = e2, S(u2, l2, g2), e2 = u2.__d, v2 = 0; v2 < b2; v2++)
+    null != (y2 = u2.__k[v2]) && "boolean" != typeof y2 && "function" != typeof y2 && (p2 = -1 === y2.__i ? c : g2[y2.__i] || c, y2.__i = v2, M(n2, y2, p2, i2, o2, r2, f2, e2, a2, h2), d2 = y2.__e, y2.ref && p2.ref != y2.ref && (p2.ref && N(p2.ref, null, y2), h2.push(y2.ref, y2.__c || d2, y2)), null == _ && null != d2 && (_ = d2), 65536 & y2.__u || p2.__k === y2.__k ? e2 = $(y2, e2, n2) : "function" == typeof y2.type && void 0 !== y2.__d ? e2 = y2.__d : d2 && (e2 = d2.nextSibling), y2.__d = void 0, y2.__u &= -196609);
+  u2.__d = e2, u2.__e = _;
+}
+function S(n2, l2, u2) {
+  var t2, i2, o2, r2, f2, e2 = l2.length, c2 = u2.length, s2 = c2, a2 = 0;
+  for (n2.__k = [], t2 = 0; t2 < e2; t2++)
+    r2 = t2 + a2, null != (i2 = n2.__k[t2] = null == (i2 = l2[t2]) || "boolean" == typeof i2 || "function" == typeof i2 ? null : "string" == typeof i2 || "number" == typeof i2 || "bigint" == typeof i2 || i2.constructor == String ? d(null, i2, null, null, null) : h(i2) ? d(g, { children: i2 }, null, null, null) : void 0 === i2.constructor && i2.__b > 0 ? d(i2.type, i2.props, i2.key, i2.ref ? i2.ref : null, i2.__v) : i2) ? (i2.__ = n2, i2.__b = n2.__b + 1, f2 = I(i2, u2, r2, s2), i2.__i = f2, o2 = null, -1 !== f2 && (s2--, (o2 = u2[f2]) && (o2.__u |= 131072)), null == o2 || null === o2.__v ? (-1 == f2 && a2--, "function" != typeof i2.type && (i2.__u |= 65536)) : f2 !== r2 && (f2 === r2 + 1 ? a2++ : f2 > r2 ? s2 > e2 - r2 ? a2 += f2 - r2 : a2-- : f2 < r2 ? f2 == r2 - 1 && (a2 = f2 - r2) : a2 = 0, f2 !== t2 + a2 && (i2.__u |= 65536))) : (o2 = u2[r2]) && null == o2.key && o2.__e && 0 == (131072 & o2.__u) && (o2.__e == n2.__d && (n2.__d = m(o2)), O(o2, o2, false), u2[r2] = null, s2--);
+  if (s2)
+    for (t2 = 0; t2 < c2; t2++)
+      null != (o2 = u2[t2]) && 0 == (131072 & o2.__u) && (o2.__e == n2.__d && (n2.__d = m(o2)), O(o2, o2));
+}
+function $(n2, l2, u2) {
+  var t2, i2;
+  if ("function" == typeof n2.type) {
+    for (t2 = n2.__k, i2 = 0; t2 && i2 < t2.length; i2++)
+      t2[i2] && (t2[i2].__ = n2, l2 = $(t2[i2], l2, u2));
+    return l2;
+  }
+  n2.__e != l2 && (u2.insertBefore(n2.__e, l2 || null), l2 = n2.__e);
+  do {
+    l2 = l2 && l2.nextSibling;
+  } while (null != l2 && 8 === l2.nodeType);
+  return l2;
+}
+function I(n2, l2, u2, t2) {
+  var i2 = n2.key, o2 = n2.type, r2 = u2 - 1, f2 = u2 + 1, e2 = l2[u2];
+  if (null === e2 || e2 && i2 == e2.key && o2 === e2.type && 0 == (131072 & e2.__u))
+    return u2;
+  if (t2 > (null != e2 && 0 == (131072 & e2.__u) ? 1 : 0))
+    for (; r2 >= 0 || f2 < l2.length; ) {
+      if (r2 >= 0) {
+        if ((e2 = l2[r2]) && 0 == (131072 & e2.__u) && i2 == e2.key && o2 === e2.type)
+          return r2;
+        r2--;
+      }
+      if (f2 < l2.length) {
+        if ((e2 = l2[f2]) && 0 == (131072 & e2.__u) && i2 == e2.key && o2 === e2.type)
+          return f2;
+        f2++;
+      }
+    }
+  return -1;
+}
+function T(n2, l2, u2) {
+  "-" === l2[0] ? n2.setProperty(l2, null == u2 ? "" : u2) : n2[l2] = null == u2 ? "" : "number" != typeof u2 || a.test(l2) ? u2 : u2 + "px";
+}
+function A(n2, l2, u2, t2, i2) {
+  var o2;
+  n:
+    if ("style" === l2)
+      if ("string" == typeof u2)
+        n2.style.cssText = u2;
+      else {
+        if ("string" == typeof t2 && (n2.style.cssText = t2 = ""), t2)
+          for (l2 in t2)
+            u2 && l2 in u2 || T(n2.style, l2, "");
+        if (u2)
+          for (l2 in u2)
+            t2 && u2[l2] === t2[l2] || T(n2.style, l2, u2[l2]);
+      }
+    else if ("o" === l2[0] && "n" === l2[1])
+      o2 = l2 !== (l2 = l2.replace(/(PointerCapture)$|Capture$/i, "$1")), l2 = l2.toLowerCase() in n2 ? l2.toLowerCase().slice(2) : l2.slice(2), n2.l || (n2.l = {}), n2.l[l2 + o2] = u2, u2 ? t2 ? u2.u = t2.u : (u2.u = Date.now(), n2.addEventListener(l2, o2 ? L : D, o2)) : n2.removeEventListener(l2, o2 ? L : D, o2);
+    else {
+      if (i2)
+        l2 = l2.replace(/xlink(H|:h)/, "h").replace(/sName$/, "s");
+      else if ("width" !== l2 && "height" !== l2 && "href" !== l2 && "list" !== l2 && "form" !== l2 && "tabIndex" !== l2 && "download" !== l2 && "rowSpan" !== l2 && "colSpan" !== l2 && "role" !== l2 && l2 in n2)
+        try {
+          n2[l2] = null == u2 ? "" : u2;
+          break n;
+        } catch (n3) {
+        }
+      "function" == typeof u2 || (null == u2 || false === u2 && "-" !== l2[4] ? n2.removeAttribute(l2) : n2.setAttribute(l2, u2));
+    }
+}
+function D(n2) {
+  if (this.l) {
+    var u2 = this.l[n2.type + false];
+    if (n2.t) {
+      if (n2.t <= u2.u)
+        return;
+    } else
+      n2.t = Date.now();
+    return u2(l.event ? l.event(n2) : n2);
+  }
+}
+function L(n2) {
+  if (this.l)
+    return this.l[n2.type + true](l.event ? l.event(n2) : n2);
+}
+function M(n2, u2, t2, i2, o2, r2, f2, e2, c2, s2) {
+  var a2, p2, y2, d2, _, m2, w2, k2, x2, C2, S2, $2, H, I2, T2, A2 = u2.type;
+  if (void 0 !== u2.constructor)
+    return null;
+  128 & t2.__u && (c2 = !!(32 & t2.__u), r2 = [e2 = u2.__e = t2.__e]), (a2 = l.__b) && a2(u2);
+  n:
+    if ("function" == typeof A2)
+      try {
+        if (k2 = u2.props, x2 = (a2 = A2.contextType) && i2[a2.__c], C2 = a2 ? x2 ? x2.props.value : a2.__ : i2, t2.__c ? w2 = (p2 = u2.__c = t2.__c).__ = p2.__E : ("prototype" in A2 && A2.prototype.render ? u2.__c = p2 = new A2(k2, C2) : (u2.__c = p2 = new b(k2, C2), p2.constructor = A2, p2.render = q), x2 && x2.sub(p2), p2.props = k2, p2.state || (p2.state = {}), p2.context = C2, p2.__n = i2, y2 = p2.__d = true, p2.__h = [], p2._sb = []), null == p2.__s && (p2.__s = p2.state), null != A2.getDerivedStateFromProps && (p2.__s == p2.state && (p2.__s = v({}, p2.__s)), v(p2.__s, A2.getDerivedStateFromProps(k2, p2.__s))), d2 = p2.props, _ = p2.state, p2.__v = u2, y2)
+          null == A2.getDerivedStateFromProps && null != p2.componentWillMount && p2.componentWillMount(), null != p2.componentDidMount && p2.__h.push(p2.componentDidMount);
+        else {
+          if (null == A2.getDerivedStateFromProps && k2 !== d2 && null != p2.componentWillReceiveProps && p2.componentWillReceiveProps(k2, C2), !p2.__e && (null != p2.shouldComponentUpdate && false === p2.shouldComponentUpdate(k2, p2.__s, C2) || u2.__v === t2.__v)) {
+            for (u2.__v !== t2.__v && (p2.props = k2, p2.state = p2.__s, p2.__d = false), u2.__e = t2.__e, u2.__k = t2.__k, u2.__k.forEach(function(n3) {
+              n3 && (n3.__ = u2);
+            }), S2 = 0; S2 < p2._sb.length; S2++)
+              p2.__h.push(p2._sb[S2]);
+            p2._sb = [], p2.__h.length && f2.push(p2);
+            break n;
+          }
+          null != p2.componentWillUpdate && p2.componentWillUpdate(k2, p2.__s, C2), null != p2.componentDidUpdate && p2.__h.push(function() {
+            p2.componentDidUpdate(d2, _, m2);
+          });
+        }
+        if (p2.context = C2, p2.props = k2, p2.__P = n2, p2.__e = false, $2 = l.__r, H = 0, "prototype" in A2 && A2.prototype.render) {
+          for (p2.state = p2.__s, p2.__d = false, $2 && $2(u2), a2 = p2.render(p2.props, p2.state, p2.context), I2 = 0; I2 < p2._sb.length; I2++)
+            p2.__h.push(p2._sb[I2]);
+          p2._sb = [];
+        } else
+          do {
+            p2.__d = false, $2 && $2(u2), a2 = p2.render(p2.props, p2.state, p2.context), p2.state = p2.__s;
+          } while (p2.__d && ++H < 25);
+        p2.state = p2.__s, null != p2.getChildContext && (i2 = v(v({}, i2), p2.getChildContext())), y2 || null == p2.getSnapshotBeforeUpdate || (m2 = p2.getSnapshotBeforeUpdate(d2, _)), P(n2, h(T2 = null != a2 && a2.type === g && null == a2.key ? a2.props.children : a2) ? T2 : [T2], u2, t2, i2, o2, r2, f2, e2, c2, s2), p2.base = u2.__e, u2.__u &= -161, p2.__h.length && f2.push(p2), w2 && (p2.__E = p2.__ = null);
+      } catch (n3) {
+        u2.__v = null, c2 || null != r2 ? (u2.__e = e2, u2.__u |= c2 ? 160 : 32, r2[r2.indexOf(e2)] = null) : (u2.__e = t2.__e, u2.__k = t2.__k), l.__e(n3, u2, t2);
+      }
+    else
+      null == r2 && u2.__v === t2.__v ? (u2.__k = t2.__k, u2.__e = t2.__e) : u2.__e = z(t2.__e, u2, t2, i2, o2, r2, f2, c2, s2);
+  (a2 = l.diffed) && a2(u2);
+}
+function j(n2, u2, t2) {
+  for (var i2 = 0; i2 < t2.length; i2++)
+    N(t2[i2], t2[++i2], t2[++i2]);
+  l.__c && l.__c(u2, n2), n2.some(function(u3) {
+    try {
+      n2 = u3.__h, u3.__h = [], n2.some(function(n3) {
+        n3.call(u3);
+      });
+    } catch (n3) {
+      l.__e(n3, u3.__v);
+    }
+  });
+}
+function z(l2, u2, t2, i2, o2, r2, f2, e2, s2) {
+  var a2, v2, y2, d2, _, g2, b2, w2 = t2.props, k2 = u2.props, x2 = u2.type;
+  if ("svg" === x2 && (o2 = true), null != r2) {
+    for (a2 = 0; a2 < r2.length; a2++)
+      if ((_ = r2[a2]) && "setAttribute" in _ == !!x2 && (x2 ? _.localName === x2 : 3 === _.nodeType)) {
+        l2 = _, r2[a2] = null;
+        break;
+      }
+  }
+  if (null == l2) {
+    if (null === x2)
+      return document.createTextNode(k2);
+    l2 = o2 ? document.createElementNS("http://www.w3.org/2000/svg", x2) : document.createElement(x2, k2.is && k2), r2 = null, e2 = false;
+  }
+  if (null === x2)
+    w2 === k2 || e2 && l2.data === k2 || (l2.data = k2);
+  else {
+    if (r2 = r2 && n.call(l2.childNodes), w2 = t2.props || c, !e2 && null != r2)
+      for (w2 = {}, a2 = 0; a2 < l2.attributes.length; a2++)
+        w2[(_ = l2.attributes[a2]).name] = _.value;
+    for (a2 in w2)
+      _ = w2[a2], "children" == a2 || ("dangerouslySetInnerHTML" == a2 ? y2 = _ : "key" === a2 || a2 in k2 || A(l2, a2, null, _, o2));
+    for (a2 in k2)
+      _ = k2[a2], "children" == a2 ? d2 = _ : "dangerouslySetInnerHTML" == a2 ? v2 = _ : "value" == a2 ? g2 = _ : "checked" == a2 ? b2 = _ : "key" === a2 || e2 && "function" != typeof _ || w2[a2] === _ || A(l2, a2, _, w2[a2], o2);
+    if (v2)
+      e2 || y2 && (v2.__html === y2.__html || v2.__html === l2.innerHTML) || (l2.innerHTML = v2.__html), u2.__k = [];
+    else if (y2 && (l2.innerHTML = ""), P(l2, h(d2) ? d2 : [d2], u2, t2, i2, o2 && "foreignObject" !== x2, r2, f2, r2 ? r2[0] : t2.__k && m(t2, 0), e2, s2), null != r2)
+      for (a2 = r2.length; a2--; )
+        null != r2[a2] && p(r2[a2]);
+    e2 || (a2 = "value", void 0 !== g2 && (g2 !== l2[a2] || "progress" === x2 && !g2 || "option" === x2 && g2 !== w2[a2]) && A(l2, a2, g2, w2[a2], false), a2 = "checked", void 0 !== b2 && b2 !== l2[a2] && A(l2, a2, b2, w2[a2], false));
+  }
+  return l2;
+}
+function N(n2, u2, t2) {
+  try {
+    "function" == typeof n2 ? n2(u2) : n2.current = u2;
+  } catch (n3) {
+    l.__e(n3, t2);
+  }
+}
+function O(n2, u2, t2) {
+  var i2, o2;
+  if (l.unmount && l.unmount(n2), (i2 = n2.ref) && (i2.current && i2.current !== n2.__e || N(i2, null, u2)), null != (i2 = n2.__c)) {
+    if (i2.componentWillUnmount)
+      try {
+        i2.componentWillUnmount();
+      } catch (n3) {
+        l.__e(n3, u2);
+      }
+    i2.base = i2.__P = null, n2.__c = void 0;
+  }
+  if (i2 = n2.__k)
+    for (o2 = 0; o2 < i2.length; o2++)
+      i2[o2] && O(i2[o2], u2, t2 || "function" != typeof n2.type);
+  t2 || null == n2.__e || p(n2.__e), n2.__ = n2.__e = n2.__d = void 0;
+}
+function q(n2, l2, u2) {
+  return this.constructor(n2, u2);
+}
+function B(u2, t2, i2) {
+  var o2, r2, f2, e2;
+  l.__ && l.__(u2, t2), r2 = (o2 = "function" == typeof i2) ? null : i2 && i2.__k || t2.__k, f2 = [], e2 = [], M(t2, u2 = (!o2 && i2 || t2).__k = y(g, null, [u2]), r2 || c, c, void 0 !== t2.ownerSVGElement, !o2 && i2 ? [i2] : r2 ? null : t2.firstChild ? n.call(t2.childNodes) : null, f2, !o2 && i2 ? i2 : r2 ? r2.__e : t2.firstChild, o2, e2), u2.__d = void 0, j(f2, u2, e2);
+}
+n = s.slice, l = { __e: function(n2, l2, u2, t2) {
+  for (var i2, o2, r2; l2 = l2.__; )
+    if ((i2 = l2.__c) && !i2.__)
+      try {
+        if ((o2 = i2.constructor) && null != o2.getDerivedStateFromError && (i2.setState(o2.getDerivedStateFromError(n2)), r2 = i2.__d), null != i2.componentDidCatch && (i2.componentDidCatch(n2, t2 || {}), r2 = i2.__d), r2)
+          return i2.__E = i2;
+      } catch (l3) {
+        n2 = l3;
+      }
+  throw n2;
+} }, u = 0, t = function(n2) {
+  return null != n2 && null == n2.constructor;
+}, b.prototype.setState = function(n2, l2) {
+  var u2;
+  u2 = null != this.__s && this.__s !== this.state ? this.__s : this.__s = v({}, this.state), "function" == typeof n2 && (n2 = n2(v({}, u2), this.props)), n2 && v(u2, n2), null != n2 && this.__v && (l2 && this._sb.push(l2), x(this));
+}, b.prototype.forceUpdate = function(n2) {
+  this.__v && (this.__e = true, n2 && this.__h.push(n2), x(this));
+}, b.prototype.render = g, i = [], r = "function" == typeof Promise ? Promise.prototype.then.bind(Promise.resolve()) : setTimeout, f = function(n2, l2) {
+  return n2.__v.__b - l2.__v.__b;
+}, C.__r = 0, e = 0;
+
+// src/calculate-hash.ts
+var ITERATIONS = 5e4;
+var SHA521_CACHE = {
+  previous: /* @__PURE__ */ new Map(),
+  current: /* @__PURE__ */ new Map()
+};
+var calculateHash = (lines, assertStillRequired) => __async(void 0, null, function* () {
+  const hashes = new Array();
+  for (const line of lines) {
+    hashes.push(yield calculateSHA512(line, assertStillRequired));
+  }
+  return hashes.length === 1 ? hashes[0] : yield calculateSHA512(hashes.join(""), assertStillRequired);
+});
+var calculateSHA512 = (line, assertStillRequired) => __async(void 0, null, function* () {
+  return withCache(line, SHA521_CACHE, () => __async(void 0, null, function* () {
+    let hash = "";
+    for (let index = 0; index < ITERATIONS; index++) {
+      assertStillRequired();
+      const buffer = yield crypto.subtle.digest("SHA-512", new TextEncoder().encode(hash + line));
+      hash = [...new Uint8Array(buffer)].map((x2) => x2.toString(16).padStart(2, "0")).join("");
+    }
+    return hash;
+  }));
+});
+var withCache = (line, cache, calculateHash2) => __async(void 0, null, function* () {
+  var _a, _b;
+  if (1e3 < cache.current.size) {
+    cache.previous = cache.current;
+    cache.current = /* @__PURE__ */ new Map();
+  }
+  const hash = (_b = (_a = cache.previous.get(line)) != null ? _a : cache.current.get(line)) != null ? _b : yield calculateHash2();
+  cache.current.set(line, hash);
+  return hash;
+});
+
+// src/components/CalculationInfo.tsx
+var CalculationInfo = class extends b {
+  //
+  //------------------------------------------------------------------------------------------------------------------
+  // Initialization
+  //------------------------------------------------------------------------------------------------------------------
+  constructor(props) {
+    super(props);
+    this.onToggleCalculationRules = this.onToggleCalculationRules.bind(this);
+    this.state = { calculationRulesVisible: false };
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Render
+  //------------------------------------------------------------------------------------------------------------------
+  render() {
+    return /* @__PURE__ */ y("div", { class: "CalculationInfo" }, /* @__PURE__ */ y("div", { class: "toggle" }, /* @__PURE__ */ y("a", { onClick: this.onToggleCalculationRules }, this.state.calculationRulesVisible ? "Hide" : "Show", " calculation rules", " ", this.state.calculationRulesVisible ? "\u25B2" : "\u25B6")), this.renderCalculation());
+  }
+  renderFormula() {
+    const { numberOfLines } = this.props;
+    if (1 === numberOfLines) {
+      return this.renderSHA512(0);
+    } else if (numberOfLines <= 3) {
+      const segments = new Array(numberOfLines).fill("").map((_, index) => this.renderSHA512(index));
+      return this.renderSHA512(segments.join(" + "));
+    } else {
+      const segments = [this.renderSHA512(0), this.renderSHA512(1), "...", this.renderSHA512(numberOfLines - 1)];
+      return this.renderSHA512(segments.join(" + "));
+    }
+  }
+  renderSHA512(indexOrExpression) {
+    const expression = "number" === typeof indexOrExpression ? `input-${indexOrExpression + 1}` : indexOrExpression;
+    return `hash(${expression})`;
+  }
+  renderCalculation() {
+    return this.state.calculationRulesVisible && /* @__PURE__ */ y("div", { class: "rules" }, /* @__PURE__ */ y("table", null, /* @__PURE__ */ y("tr", null, /* @__PURE__ */ y("td", null, "result"), /* @__PURE__ */ y("td", null, "="), /* @__PURE__ */ y("td", null, this.renderFormula())), /* @__PURE__ */ y("tr", null, /* @__PURE__ */ y("td", null, "hash(input)"), /* @__PURE__ */ y("td", null, "="), /* @__PURE__ */ y("td", null, "hash", ITERATIONS, "(input)")), /* @__PURE__ */ y("tr", null, /* @__PURE__ */ y("td", null, "hash", ITERATIONS, "(input)"), /* @__PURE__ */ y("td", null, "="), /* @__PURE__ */ y("td", null, "sha512(hash", ITERATIONS - 1, "(input) + input)")), /* @__PURE__ */ y("tr", null, /* @__PURE__ */ y("td", null, "hash", ITERATIONS - 1, "(input)"), /* @__PURE__ */ y("td", null, "="), /* @__PURE__ */ y("td", null, "sha512(hash", ITERATIONS - 2, "(input) + input)")), /* @__PURE__ */ y("tr", { class: "ellipsis" }, /* @__PURE__ */ y("td", null, "[...]"), /* @__PURE__ */ y("td", null), /* @__PURE__ */ y("td", null)), /* @__PURE__ */ y("tr", null, /* @__PURE__ */ y("td", null, "hash2(input)"), /* @__PURE__ */ y("td", null, "="), /* @__PURE__ */ y("td", null, "sha512(hash1(input) + input)")), /* @__PURE__ */ y("tr", null, /* @__PURE__ */ y("td", null, "hash1(input)"), /* @__PURE__ */ y("td", null, "="), /* @__PURE__ */ y("td", null, "sha512(input)"))));
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Event handlers
+  //------------------------------------------------------------------------------------------------------------------
+  onToggleCalculationRules() {
+    this.setState(__spreadProps(__spreadValues({}, this.state), { calculationRulesVisible: !this.state.calculationRulesVisible }));
+  }
+};
+
+// src/components/Header.tsx
+var Header = class extends b {
+  //
+  //------------------------------------------------------------------------------------------------------------------
+  // Render
+  //------------------------------------------------------------------------------------------------------------------
+  render() {
+    return /* @__PURE__ */ y("div", { class: "Header" }, /* @__PURE__ */ y("span", null, "Just hash"), /* @__PURE__ */ y("span", { class: "separator" }, " | "), /* @__PURE__ */ y("span", null, "SHA-512"), /* @__PURE__ */ y("span", { class: "separator" }, " | "), /* @__PURE__ */ y("span", null, /* @__PURE__ */ y("a", { href: "https://github.com/david-04/just-hash" }, "GitHub")));
+  }
+};
+
+// src/components/InputRow.tsx
+var InputRow = class extends b {
+  //------------------------------------------------------------------------------------------------------------------
+  // Initialization
+  //------------------------------------------------------------------------------------------------------------------
+  constructor() {
+    super();
+    __publicField(this, "previousValue", "");
+    __publicField(this, "inputField", null);
+    this.onChange = this.onChange.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onFocus = this.onFocus.bind(this);
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Render
+  //------------------------------------------------------------------------------------------------------------------
+  render() {
+    return /* @__PURE__ */ y("div", { class: `InputRow ${this.props.isLast ? "last" : ""}` }, /* @__PURE__ */ y(
+      "input",
+      {
+        type: "password",
+        onInput: this.onChange,
+        onKeyDown: this.onKeyDown,
+        onFocus: this.onFocus,
+        ref: (element) => {
+          this.inputField = element;
+        }
+      }
+    ));
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // API
+  //------------------------------------------------------------------------------------------------------------------
+  focus() {
+    const inputField = this.inputField;
+    if (inputField) {
+      inputField.focus();
+      setTimeout(() => inputField.selectionStart = inputField.selectionEnd = inputField.value.length, 0);
+    }
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Event handlers
+  //------------------------------------------------------------------------------------------------------------------
+  onChange(event) {
+    const currentValue = event.target.value.trim();
+    if (currentValue !== this.previousValue) {
+      this.props.onChange(this.props.index, currentValue);
+      this.previousValue = currentValue;
+    }
+  }
+  onKeyDown(event) {
+    switch (event.key) {
+      case "ArrowUp":
+        this.props.onMoveCursor(this.props.index - 1);
+        break;
+      case "ArrowDown":
+      case "Enter":
+        this.props.onMoveCursor(this.props.index + 1);
+        break;
+    }
+  }
+  onFocus() {
+    this.props.onMoveCursor(this.props.index);
+  }
+};
+
+// src/components/ResultRow.tsx
+var ResultRow = class extends b {
+  //
+  //------------------------------------------------------------------------------------------------------------------
+  // Initialization
+  //------------------------------------------------------------------------------------------------------------------
+  constructor(props) {
+    super(props);
+    this.onButtonClicked = this.onButtonClicked.bind(this);
+    this.state = { copyState: "idle", lines: [], currentlyCalculatingLines: [], hash: void 0 };
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Render
+  //------------------------------------------------------------------------------------------------------------------
+  render() {
+    this.triggerHashCalculationIfNecessary();
+    return /* @__PURE__ */ y("div", { class: "ResultRow" }, /* @__PURE__ */ y("button", { class: this.getButtonClass(), disabled: !this.canStartCopying(), onClick: this.onButtonClicked }, this.getButtonText()), /* @__PURE__ */ y("div", { class: "hash" }, this.getHash()));
+  }
+  getHash() {
+    return this.linesAreCurrent(this.state.lines) ? `${this.state.hash}` : "Calculating...";
+  }
+  getButtonClass() {
+    return this.state.copyState !== "idle" || this.canStartCopying() ? this.state.copyState : "busy";
+  }
+  getButtonText() {
+    switch (this.state.copyState) {
+      case "idle":
+      case "busy":
+        return "Copy";
+      case "success":
+        return "ok";
+      case "failed":
+        return "ERROR";
+    }
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Event handlers
+  //------------------------------------------------------------------------------------------------------------------
+  onButtonClicked() {
+    return __async(this, null, function* () {
+      this.setState(__spreadProps(__spreadValues({}, this.state), { copyState: "busy" }), () => __async(this, null, function* () {
+        try {
+          yield navigator.clipboard.writeText(`${this.state.hash}`);
+          this.flashButton("success");
+        } catch (error) {
+          console.error(error);
+          this.flashButton("failed");
+        }
+      }));
+    });
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Internal functions
+  //------------------------------------------------------------------------------------------------------------------
+  canStartCopying() {
+    return "idle" === this.state.copyState && "string" === typeof this.state.hash && this.linesAreCurrent(this.state.lines);
+  }
+  triggerHashCalculationIfNecessary() {
+    if (!this.linesAreCurrent(this.state.lines) && !this.linesAreCurrent(this.state.currentlyCalculatingLines)) {
+      const lines = [...this.props.lines];
+      this.setState(__spreadProps(__spreadValues({}, this.state), { currentlyCalculatingLines: lines }), () => {
+        setTimeout(() => this.calculateHash(lines), 0);
+      });
+    }
+  }
+  calculateHash(lines) {
+    return __async(this, null, function* () {
+      try {
+        const hash = yield calculateHash(lines, () => this.assertLinesAreCurrent(lines));
+        this.assertLinesAreCurrent(lines);
+        this.setState(__spreadProps(__spreadValues({}, this.state), { lines, hash }));
+      } catch (error) {
+        if (this.linesAreCurrent(lines)) {
+          this.setState(__spreadProps(__spreadValues({}, this.state), {
+            lines,
+            hash: error instanceof Error ? error : new Error(`${error}`)
+          }));
+        }
+      }
+    });
+  }
+  assertLinesAreCurrent(lines) {
+    if (!this.linesAreCurrent(lines)) {
+      throw new Error("Lines have changed");
+    }
+  }
+  linesAreCurrent(lines) {
+    return lines.length === this.props.lines.length && lines.every((value, index) => value === this.props.lines[index]);
+  }
+  flashButton(copyState) {
+    this.setState(__spreadProps(__spreadValues({}, this.state), { copyState }), () => {
+      setTimeout(() => this.setState(__spreadProps(__spreadValues({}, this.state), { copyState: "idle" })), 500);
+    });
+  }
+};
+
+// src/components/Application.tsx
+var Application = class extends b {
+  //------------------------------------------------------------------------------------------------------------------
+  // Initialization
+  //------------------------------------------------------------------------------------------------------------------
+  constructor(props) {
+    super(props);
+    __publicField(this, "inputRows", []);
+    this.state = { lines: ["", ""] };
+    this.onChange = this.onChange.bind(this);
+    this.onMoveCursor = this.onMoveCursor.bind(this);
+  }
+  render() {
+    const lines = [...this.state.lines];
+    while (1 < lines.length && !lines[lines.length - 1]) {
+      lines.length--;
+    }
+    return /* @__PURE__ */ y("div", { class: "Application" }, /* @__PURE__ */ y(Header, null), this.renderInputRows(), /* @__PURE__ */ y(ResultRow, { lines }), /* @__PURE__ */ y(CalculationInfo, { numberOfLines: lines.length }));
+  }
+  renderInputRows() {
+    const inputRows = new Array();
+    const result = this.state.lines.map((_, index) => /* @__PURE__ */ y(
+      InputRow,
+      {
+        key: index,
+        index,
+        isLast: index + 1 === this.state.lines.length,
+        onChange: this.onChange,
+        onMoveCursor: this.onMoveCursor,
+        ref: (inputRow) => inputRows.push(inputRow)
+      }
+    ));
+    this.inputRows = inputRows;
+    return result;
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Event handlers
+  //------------------------------------------------------------------------------------------------------------------
+  onChange(index, newValue) {
+    const lines = [...this.state.lines];
+    lines[index] = newValue.trim();
+    if (lines[lines.length - 1]) {
+      lines.push("");
+    } else {
+      this.purge(2);
+    }
+    this.setState(__spreadProps(__spreadValues({}, this.state), { lines }));
+  }
+  onMoveCursor(targetRow) {
+    var _a;
+    targetRow = Math.max(0, Math.min(targetRow, this.inputRows.length - 1));
+    (_a = this.inputRows[targetRow]) == null ? void 0 : _a.focus();
+    if (targetRow === this.inputRows.length - 1) {
+      this.setState(__spreadProps(__spreadValues({}, this.state), { lines: [...this.state.lines, ""] }));
+    } else {
+      this.purge(targetRow + 2);
+    }
+  }
+  //------------------------------------------------------------------------------------------------------------------
+  // Internal functions
+  //------------------------------------------------------------------------------------------------------------------
+  purge(minLength) {
+    const lines = [...this.state.lines];
+    while (minLength < lines.length && !lines[lines.length - 1] && !lines[lines.length - 2]) {
+      lines.length--;
+    }
+    this.setState(__spreadProps(__spreadValues({}, this.state), { lines }));
+  }
+};
+
+// src/just-hash.tsx
+B(/* @__PURE__ */ y(Application, null), document.getElementById("app"));
+//# sourceMappingURL=just-hash.js.map
+</script>
+</body>
+
+</html>
