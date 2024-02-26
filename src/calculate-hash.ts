@@ -15,7 +15,7 @@ export const calculateHash = async (lines: ReadonlyArray<string>, assertStillReq
 
 export const calculateSHA512 = async (line: string, assertStillRequired: AssertStillRequired) => {
     return withCache(line, PREVIOUS_SHA512_CACHE, CURRENT_SHA512_CACHE, async () => {
-        let hash = line;
+        let hash = "";
         for (let index = 0; index < ITERATIONS; index++) {
             assertStillRequired();
             const buffer = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(hash + line));
