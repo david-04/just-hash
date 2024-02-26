@@ -1,0 +1,17 @@
+.Header {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    font-size: 0.8rem;
+    opacity: 0.5;
+    z-index: 999;
+}
+
+.Header a {
+    text-decoration: none;
+}
+
+.Header .separator {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+}

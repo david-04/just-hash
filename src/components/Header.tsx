@@ -1,18 +1,18 @@
 import { Component, h } from "preact";
 
-import "./Copyright.css";
+import "./Header.css";
 
 //----------------------------------------------------------------------------------------------------------------------
 // Properties and state
 //----------------------------------------------------------------------------------------------------------------------
 
-export interface CopyrightProperties {}
+export interface HeaderProperties {}
 
 //----------------------------------------------------------------------------------------------------------------------
 // Component
 //----------------------------------------------------------------------------------------------------------------------
 
-export class Copyright extends Component<CopyrightProperties, never> {
+export class Header extends Component<HeaderProperties, never> {
     //
     //------------------------------------------------------------------------------------------------------------------
     // Render
@@ -20,9 +20,14 @@ export class Copyright extends Component<CopyrightProperties, never> {
 
     render() {
         return (
-            <div class="Copyright">
-                Copyright (c) 2024 David Hofmann | <a href="https://choosealicense.com/licenses/mit/">MIT License</a> |{" "}
-                <a href="https://github.com/david-04/just-hash">GitHub</a>
+            <div class="Header">
+                <span>Just hash</span>
+                <span class="separator"> | </span>
+                <span>SHA-512</span>
+                <span class="separator"> | </span>
+                <span>
+                    <a href="https://github.com/david-04/just-hash">GitHub</a>
+                </span>
             </div>
         );
     }

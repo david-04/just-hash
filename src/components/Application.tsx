@@ -1,6 +1,6 @@
 import { Component, h } from "preact";
 import { CalculationInfo } from "./CalculationInfo.js";
-import { Copyright } from "./Copyright.js";
+import { Header } from "./Header.js";
 import { InputRow } from "./InputRow.jsx";
 import { ResultRow } from "./ResultRow.js";
 
@@ -41,10 +41,10 @@ export class Application extends Component<ApplicationProps, ApplicationState> {
         }
         return (
             <div class="Application">
-                <Copyright />
                 {this.renderInputRows()}
                 <ResultRow lines={lines} />
                 <CalculationInfo numberOfLines={lines.length} />
+                <Header />
             </div>
         );
     }
