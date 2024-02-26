@@ -5,5 +5,3 @@
 /build/.tsbuildinfo
 /dist/*.js*
 /dist/*.css*
-/dist/favicon.*
-!/dist/favicon.svg
