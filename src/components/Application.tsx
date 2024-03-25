@@ -69,6 +69,10 @@ export class Application extends Component<ApplicationProps, ApplicationState> {
     // Event handlers
     //------------------------------------------------------------------------------------------------------------------
 
+    override componentDidMount() {
+        this.inputRows[0]?.focus();
+    }
+
     onChange(index: number, newValue: string) {
         const lines = [...this.state.lines];
         lines[index] = newValue.trim();
