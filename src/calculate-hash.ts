@@ -21,11 +21,18 @@ export const calculateSHA512 = async (line: string, assertStillRequired: AssertS
         for (let index = 0; index < ITERATIONS; index++) {
             assertStillRequired();
             const buffer = await crypto.subtle.digest("SHA-512", new TextEncoder().encode(hash + line));
-            hash = [...new Uint8Array(buffer)].map(x => x.toString(16).padStart(2, "0")).join("");
+            hash = [...new Uint8Array(buffer)].map(x => padStart(x.toString(16), 2, "0")).join("");
         }
         return hash;
     });
 };
+
+function padStart(string: string, length: number, character: string) {
+    while (string.length < length) {
+        string = character + string;
+    }
+    return string;
+}
 
 export const withCache = async (line: string, cache: typeof SHA521_CACHE, calculateHash: () => Promise<string>) => {
     if (1000 < cache.current.size) {
