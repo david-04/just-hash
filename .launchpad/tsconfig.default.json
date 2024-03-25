@@ -51,6 +51,8 @@
         "preserveSymlinks": false,
         "removeComments": true,
         "resolveJsonModule": true,
+        "resolvePackageJsonExports": true,
+        "resolvePackageJsonImports": true,
         "skipLibCheck": true,
         "sourceMap": true,
         "strict": true,

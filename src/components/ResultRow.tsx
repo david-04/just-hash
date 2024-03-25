@@ -1,6 +1,6 @@
 import { Component, h } from "preact";
 
-import { calculateHash } from "../calculate-hash";
+import { calculateHash } from "../calculate-hash.js";
 import "./ResultRow.css";
 
 //----------------------------------------------------------------------------------------------------------------------

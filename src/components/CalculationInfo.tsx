@@ -1,6 +1,6 @@
 import { Component, h } from "preact";
 
-import { ITERATIONS } from "../calculate-hash";
+import { ITERATIONS } from "../calculate-hash.js";
 import "./CalculationInfo.css";
 
 //----------------------------------------------------------------------------------------------------------------------
