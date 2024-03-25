@@ -7,11 +7,5 @@
     "dependencies": {
         "preact": "^10.20.1"
     },
-    "devDependencies": {
-        "@biomejs/biome": "^1.6.3",
-        "esbuild": "^0.20.2",
-        "ts-node": "^10.9.2",
-        "typescript": "^5.4.3"
-    },
     "type": "module"
 }
